@@ -1,0 +1,39 @@
+Managing Docker Images
+
+
+Docker Pull
+Before we can run a Docker container, we will first need an image. Recall from the “Intro to Containerisation” room that images are instructions for what a container should execute. There’s no use running a container that does nothing!
+
+In this room, we will use the Nginx image to run a web server within a container. Before downloading the image, let’s break down the commands and syntax required to download an image. Images can be downloaded using the docker pull command and providing the name of the image.
+
+For example, 
+
+--> docker pull nginx.    
+Docker must know where to get this image 
+
+When specifying a tag, you must include a colon : between the image name and tag, 
+
+for example, 
+
+--> docker pull ubuntu:22.04 
+(image:tag). Don’t forget about tags - we will return to these in a future task!
+
+
+Docker Image x/y/z
+The docker image command, with the appropriate option, allows us to manage the images on our local system. To list the available options, we can simply do 
+
+--> docker image 
+
+to see what we can do. I’ve done this for you in the terminal below:
+
+pull (we have done this above!)
+ls (list images)
+rm (remove an image)
+build (we will come onto this in the “Building your First Container” task)
+
+
+--> Docker Image ls
+This command allows us to list all images stored on the local system. We can use this command to verify if an image has been downloaded correctly and to view a little bit more information about it (such as the tag, when the image was created and the size of the image).
+
+--> Docker Image rm
+If we want to remove an image from the system, we can use docker image rm along with the name (or Image ID). In the following example, I will remove the "ubuntu" image with the tag "22.04". My command will be docker image rm ubuntu:22.04:
