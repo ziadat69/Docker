@@ -14,3 +14,13 @@ Namely, by the end of the room, you will be familiar with the following:
 Please note: It is strongly recommended that you are at least familiar with basic Linux syntax (such as running commands, moving files and familiarity with how the filesystem structure looks). If you have completed the Linux Fundamentals Module - you will be all set for this room!
 
 Additionally, it is important to remember that you will need internet connectivity to pull Docker images.  If you are a free user and wish to practice the commands in this room, you will need to do this in your own environment.
+
+
+Docker can seem overwhelming at first. However, the commands are pretty intuitive, and with a bit of practice, you’ll be a Docker wizard in no time.
+
+The syntax for Docker can be categorised into four main groups:
+Running a container
+Managing & Inspecting containers
+Managing Docker images
+Docker daemon stats and information
+We will break down each of these categories in this task.
