@@ -1,0 +1,146 @@
+You use Dockerfiles to contain the commands the container should execute when it is built. To get started with Dockerfiles, we need to know some basic syntax and instructions. Dockerfiles are formatted in the following way:
+
+INSTRUCTION argument
+
+1>> First, let’s cover some essential instructions:
+
+
+1) FROM    This instruction sets a build stage for the container as well as setting the base image (operating system). All Dockerfiles must start with this. 
+      Example : FROM ubuntu
+
+2) RUN     This instruction will execute commands in the container within a new layer.
+      Example : RUN whoami
+
+
+
+3) COPY     This instruction copies files from the local system to the working directory in the container (the syntax is similar to the cp command).
+      Example : COPY /home/cmnatic/myfolder/app/
+
+4) WORKDIR  This instruction sets the working directory of the container. (similar to using cd on Linux).
+      Example : WORKDIR /(sets to the root of the filesystem in the container)
+
+5) CMD      This instruction determines what command is run when the container starts (you would use this to start a service or application).
+      Example : CMD /bin/sh -c script.sh
+
+5) EXPOSE    This instruction is used to tell the person who runs the container what port they should publish when running the container.
+      Example : EXPOSE 80  (tells the person running the container to publish to port 80 i.e. docker run -p 80:80)
+
+
+Now that we understand the core instructions that make up a Dockerfile, let’s see a working example of a Dockerfile. But first, I’ll explain what I want the container to do:
+
+Use the “Ubuntu” (version 22.04) operating system as the base.
+Set the working directory to be the root of the container.
+Create the text file “helloworld.txt”.
+
+***
+
+# THIS IS A COMMENT
+# Use Ubuntu 22.04 as the base operating system of the container
+FROM ubuntu:22.04
+
+# Set the working directory to the root of the container
+WORKDIR / 
+
+# Create helloworld.txt
+RUN touch helloworld.txt
+
+***
+
+
+
+2>>> Building Your First Container
+
+Building Your First Container
+
+Once we have a Dockerfile, we can create an image using the docker build command. This command requires a few pieces of information:
+
+Whether or not you want to name the image yourself (we will use the -t (tag) argument).
+The name that you are going to give the image.
+The location of the Dockerfile you wish to build with.
+I’ll provide the scenario and then explain the relevant command. Let’s say we want to build an image - let’s fill in the two required pieces of information listed above:
+We are going to name it ourselves, so we are going to use the -t argument.
+We want to name the image.
+The Dockerfile is located in our current working directory (.).
+
+
+The Dockerfile we are going to build is the following:
+***
+
+
+# Use Ubuntu 22.04 as the base operating system of the container
+FROM ubuntu:22.04
+
+# Set the working directory to the root of the container
+WORKDIR / 
+
+# Create helloworld.txt
+RUN touch helloworld.txt
+***
+
+
+The command would look like so: docker build -t helloworld .
+
+
+
+3>>>
+
+Levelling up Our Dockerfile
+
+Let’s level up our Dockerfile. So far, our container will only create a file - that’s not very useful! In the following Dockerfile, I am going to:
+Use Ubuntu 22.04 as the base operating system for the container.
+Install the “apache2” web server.
+Add some networking. As this is a web server, we will need to be able to connect to the container over the network somehow. I will achieve this by using the EXPOSE instruction and telling the container to expose port 80.
+Tell the container to start the “apache2” service at startup. Containers do not have service managers like systemd (this is by design - it is bad practice to run multiple applications in the same container. For example, this container is for the apache2 web server - and the apache2 web server only).
+
+***
+
+# THIS IS A COMMENT
+FROM ubuntu:22.04
+
+# Update the APT repository to ensure we get the latest version of apache2
+RUN apt-get update -y 
+
+# Install apache2
+RUN apt-get install apache2 -y
+
+# Tell the container to expose port 80 to allow us to connect to the web server
+EXPOSE 80 
+
+# Tell the container to run the apache2 service
+CMD ["apache2ctl", "-D","FOREGROUND"]
+
+
+*****
+
+
+Optimising Our Dockerfile
+
+There’s certainly an art to Docker - and it doesn’t stop with Dockerfiles! Firstly, we need to ask ourselves why is it essential to optimise our Dockerfile? Bloated Dockerfiles are hard to read and maintain and often use a lot of unnecessary storage! For example, you can reduce the size of a docker image (and reduce build time!) using a few ways:
+
+Only installing the essential packages. What’s nice about containers is that they’re practically empty from the get-go - we have complete freedom to decide what we want.
+Removing cached files (such as APT cache or documentation installed with tools). The code within a container will only be executed once (on build!), so we don’t need to store anything for later use.
+Using minimal base operating systems in our FROM instruction. Even though operating systems for containers such as Ubuntu are already pretty slim, consider using an even more stripped-down version (i.e. ubuntu:22.04-minimal). Or, for example, using Alpine (which can be as small as 5.59MB!).
+Minimising the number of layers - I’ll explain this further below.
+Each instruction (I.E. FROM, RUN, etc.) is run in its own layer. Layers increase build time! The objective is to have as few layers as possible. For example, try chaining commands from RUN together like so:
+
+
+Before:
+***
+
+FROM ubuntu:latest
+RUN apt-get update -y
+RUN apt-get upgrade -y
+RUN apt-get install apache2 -y
+RUN apt-get install net-tools -y
+
+*****
+
+After:
+
+FROM ubuntu:latest
+RUN apt-get update -y && apt-get upgrade -y && apt-get install apache2 -y && apt-get install net-tools
+
+
+
+
+
