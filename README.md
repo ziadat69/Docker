@@ -24,3 +24,5 @@ Managing & Inspecting containers
 Managing Docker images
 Docker daemon stats and information
 We will break down each of these categories in this task.
+
+![Docker Image](https://github.com/ziadat69/Docker/blob/main/Docker.png?raw=true)
